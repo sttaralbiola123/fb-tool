@@ -16,7 +16,13 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def get_fb_user_id(token):
     try:
-        res = requests.get(f"https://graph.facebook.com/me?access_token={token}", timeout=10)
+        # Try v2.0 first
+        res = requests.get(f"https://graph.facebook.com/v2.0/me?access_token={token}&fields=id,name", timeout=10)
+        data = res.json()
+        if data.get("id"):
+            return data.get("id"), data.get("name")
+        # Try latest version
+        res = requests.get(f"https://graph.facebook.com/me?access_token={token}&fields=id,name", timeout=10)
         data = res.json()
         return data.get("id"), data.get("name")
     except:
@@ -165,3 +171,4 @@ def total_users():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+            
