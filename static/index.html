@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FBBoost — Free Facebook Auto Liker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #161a23;
+      --card: #1c2130;
+      --border: #262d3d;
+      --blue: #1877f2;
+      --blue-hover: #1565d8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --text: #f0f2f5;
+      --muted: #8b95a8;
+      --accent: #3b82f6;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--text); }
+    .nav-badge {
+      background: var(--blue);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 60px 24px 40px;
+      background: radial-gradient(ellipse at top, #1877f215 0%, transparent 70%);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #1877f220;
+      border: 1px solid #1877f240;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+    .hero h1 .highlight {
+      color: var(--blue);
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* MAIN CARD */
+    .main-container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 16px 60px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      display: block;
+      width: 3px;
+      height: 14px;
+      background: var(--blue);
+      border-radius: 2px;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+      gap: 4px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 7px;
+      transition: all 0.2s;
+      border: none;
+      background: none;
+    }
+    .tab.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* FORM */
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    input[type="text"] {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.2s;
+      margin-bottom: 16px;
+    }
+    input[type="text"]:focus {
+      border-color: var(--blue);
+    }
+    input[type="text"]::placeholder {
+      color: #4a5568;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .btn-blue {
+      background: var(--blue);
+      color: white;
+    }
+    .btn-blue:hover { background: var(--blue-hover); }
+    .btn-blue:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-green {
+      background: var(--green);
+      color: white;
+    }
+    .btn-green:hover { background: #16a34a; }
+    .btn-green:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ALERT */
+    .alert {
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 16px;
+      display: none;
+      line-height: 1.5;
+    }
+    .alert.success {
+      background: #16a34a20;
+      border: 1px solid #16a34a40;
+      color: var(--green);
+      display: block;
+    }
+    .alert.error {
+      background: #ef444420;
+      border: 1px solid #ef444440;
+      color: var(--red);
+      display: block;
+    }
+    .alert.info {
+      background: #1877f220;
+      border: 1px solid #1877f240;
+      color: var(--accent);
+      display: block;
+    }
+
+    /* USER INFO */
+    .user-info {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .user-info.show { display: flex; align-items: center; gap: 12px; }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .user-verified {
+      font-size: 12px;
+      color: var(--green);
+      margin-top: 2px;
+    }
+
+    /* STATS CARD */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+    .stat-box-num {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--blue);
+    }
+    .stat-box-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* HOW TO */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .step-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .step-text strong { color: var(--text); }
+
+    /* TOKEN GUIDE */
+    .guide-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .guide-box p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .guide-box p:last-child { margin-bottom: 0; }
+    .guide-box a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .code-inline {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 12px;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    /* LOADING SPINNER */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 400px) {
+      .stats-row { gap: 20px; }
+      .card { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">FB<span>Boost</span></div>
+  <div class="nav-badge">FREE</div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">⚡ Exchange Network</div>
+  <h1>Get Real <span class="highlight">Facebook Likes</span><br/>For Free</h1>
+  <p>Join our exchange network. Submit your post, and our members will like it automatically.</p>
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-num" id="hero-users">—</div>
+      <div class="stat-label">Active Users</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Free</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">Fast</div>
+      <div class="stat-label">Instant Likes</div>
+    </div>
+  </div>
+</div>
+
+<div class="main-container">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('get-likes')">Get Likes</button>
+    <button class="tab" onclick="switchTab('my-stats')">My Stats</button>
+    <button class="tab" onclick="switchTab('how-to')">How To</button>
+  </div>
+
+  <!-- TAB: GET LIKES -->
+  <div class="tab-content active" id="tab-get-likes">
+
+    <div class="card">
+      <div class="card-title">Step 1 — Verify Token</div>
+
+      <div class="user-info" id="user-info">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div>
+          <div class="user-name" id="user-name">—</div>
+          <div class="user-verified">✓ Verified</div>
+        </div>
+      </div>
+
+      <label>Your Facebook Access Token</label>
+      <input type="text" id="token-input" placeholder="Paste your access token here..." />
+
+      <button class="btn btn-blue" id="verify-btn" onclick="verifyToken()">Verify Token</button>
+      <div class="alert" id="verify-alert"></div>
+    </div>
+
+    <div class="card" id="submit-card" style="opacity:0.4; pointer-events:none;">
+      <div class="card-title">Step 2 — Submit Post</div>
+
+      <label>Facebook Post URL</label>
+      <input type="text" id="post-url-input" placeholder="https://www.facebook.com/..." />
+
+      <button class="btn btn-green" id="submit-btn" onclick="submitPost()">🚀 Send Likes</button>
+      <div class="alert" id="submit-alert"></div>
+    </div>
+
+  </div>
+
+  <!-- TAB: MY STATS -->
+  <div class="tab-content" id="tab-my-stats">
+    <div class="card">
+      <div class="card-title">Your Statistics</div>
+
+      <label>Enter your Token to view stats</label>
+      <input type="text" id="stats-token-input" placeholder="Paste your access token..." />
+      <button class="btn btn-blue" onclick="loadStats()">Load Stats</button>
+
+      <div id="stats-result" style="margin-top:20px; display:none;">
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-box-num" id="stat-received">0</div>
+            <div class="stat-box-label">Likes Received</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-num" id="stat-given">0</div>
+            <div class="stat-box-label">Likes Given</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-num" id="stat-users">0</div>
+            <div class="stat-box-label">Total Users</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert" id="stats-alert"></div>
+    </div>
+  </div>
+
+  <!-- TAB: HOW TO -->
+  <div class="tab-content" id="tab-how-to">
+    <div class="card">
+      <div class="card-title">How To Get Your Token</div>
+
+      <div class="guide-box">
+        <p><strong>Method 1 — Graph API Explorer</strong></p>
+        <p>1. Go to <a href="https://developers.facebook.com/tools/explorer/" target="_blank">developers.facebook.com/tools/explorer</a></p>
+        <p>2. Click <strong>Generate Access Token</strong></p>
+        <p>3. Copy the token and paste it here</p>
+      </div>
+
+      <div class="guide-box">
+        <p><strong>Method 2 — From Facebook URL</strong></p>
+        <p>Search on YouTube: <span class="code-inline">how to get facebook access token 2024</span></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">How It Works</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text"><strong>Paste your token</strong> — we verify it with Facebook's API. No password needed.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text"><strong>Submit your post URL</strong> — the post you want likes on.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text"><strong>Exchange happens automatically</strong> — other members like your post, and your token likes theirs.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-text"><strong>More members = more likes</strong> — the bigger the network, the more likes you get.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  FBBoost &copy; 2025 — Free Facebook Like Exchange Network
+</footer>
+
+<script>
+  const API = '';  // same origin
+  let verifiedToken = null;
+
+  // Load hero user count on page load
+  async function loadHeroStats() {
+    try {
+      const res = await fetch(`${API}/api/total_users`);
+      const data = await res.json();
+      document.getElementById('hero-users').textContent = data.count + '+';
+    } catch {}
+  }
+  loadHeroStats();
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      const tabs = ['get-likes', 'my-stats', 'how-to'];
+      t.classList.toggle('active', tabs[i] === tab);
+    });
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+  }
+
+  function showAlert(id, type, msg) {
+    const el = document.getElementById(id);
+    el.className = `alert ${type}`;
+    el.textContent = msg;
+  }
+
+  function hideAlert(id) {
+    const el = document.getElementById(id);
+    el.className = 'alert';
+    el.textContent = '';
+  }
+
+  async function verifyToken() {
+    const token = document.getElementById('token-input').value.trim();
+    if (!token) return showAlert('verify-alert', 'error', 'Please paste your access token.');
+
+    const btn = document.getElementById('verify-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Verifying...';
+    hideAlert('verify-alert');
+
+    try {
+      const res = await fetch(`${API}/api/verify`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ token })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        verifiedToken = token;
+        showAlert('verify-alert', 'success', data.message);
+
+        // Show user info
+        const info = document.getElementById('user-info');
+        info.classList.add('show');
+        document.getElementById('user-name').textContent = data.name || 'Facebook User';
+        document.getElementById('user-avatar').textContent = (data.name || 'U')[0].toUpperCase();
+
+        // Unlock submit card
+        const card = document.getElementById('submit-card');
+        card.style.opacity = '1';
+        card.style.pointerEvents = 'auto';
+      } else {
+        showAlert('verify-alert', 'error', data.message);
+        verifiedToken = null;
+      }
+    } catch {
+      showAlert('verify-alert', 'error', 'Connection error. Try again.');
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Verify Token';
+  }
+
+  async function submitPost() {
+    if (!verifiedToken) return showAlert('submit-alert', 'error', 'Please verify your token first.');
+
+    const postUrl = document.getElementById('post-url-input').value.trim();
+    if (!postUrl) return showAlert('submit-alert', 'error', 'Please enter your post URL.');
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Sending likes...';
+    hideAlert('submit-alert');
+
+    try {
+      const res = await fetch(`${API}/api/submit`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ token: verifiedToken, post_url: postUrl })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showAlert('submit-alert', 'success', `✅ ${data.message} (Est. ${data.estimated})`);
+        document.getElementById('post-url-input').value = '';
+      } else {
+        showAlert('submit-alert', 'error', data.message);
+      }
+    } catch {
+      showAlert('submit-alert', 'error', 'Connection error. Try again.');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '🚀 Send Likes';
+  }
+
+  async function loadStats() {
+    const token = document.getElementById('stats-token-input').value.trim();
+    if (!token) return showAlert('stats-alert', 'error', 'Please enter your token.');
+
+    hideAlert('stats-alert');
+    document.getElementById('stats-result').style.display = 'none';
+
+    try {
+      const res = await fetch(`${API}/api/stats`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ token })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById('stat-received').textContent = data.likes_received;
+        document.getElementById('stat-given').textContent = data.likes_given;
+        document.getElementById('stat-users').textContent = data.total_users;
+        document.getElementById('stats-result').style.display = 'block';
+      } else {
+        showAlert('stats-alert', 'error', data.message);
+      }
+    } catch {
+      showAlert('stats-alert', 'error', 'Connection error. Try again.');
+    }
+  }
+</script>
+</body>
+</html>
